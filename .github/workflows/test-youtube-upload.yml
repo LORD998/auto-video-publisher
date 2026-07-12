@@ -1,0 +1,28 @@
+name: Testar upload privado ao YouTube
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testar-upload-youtube:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      - name: Preparar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar bibliotecas
+        run: pip install -r requirements.txt
+
+      - name: Gerar video de teste de 5 segundos
+        run: |
+          ffmpeg -f lavfi -i testsrc=duration=5:size=1080x1920:rate=30 -f lavfi -i sine=frequency=1000:duration=5 -c:v libx264 -pix_fmt yuv420p -c:a aac -shortest test_video.mp4
+
+      - name: Testar upload privado ao YouTube
+        env:
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+        run: python test_youtube_upload.py
