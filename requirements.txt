@@ -2,3 +2,9 @@ google-api-python-client
 google-auth
 google-auth-httplib2
 gspread
+google-auth-oauthlib
+requests
+cloudinary
+python-dateutil
+tenacity
+python-dotenv
