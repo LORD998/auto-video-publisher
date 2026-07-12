@@ -1,0 +1,43 @@
+name: Processar fila de publicação
+
+on:
+  schedule:
+      - cron: '7,22,37,52 * * * *'
+            timezone: Europe/Berlin
+              workflow_dispatch:
+
+              concurrency:
+                group: process-queue
+                  cancel-in-progress: true
+
+                  permissions:
+                    contents: read
+
+                    jobs:
+                      processar-fila:
+                          runs-on: ubuntu-latest
+                              timeout-minutes: 45
+
+                                  steps:
+                                        - name: Baixar o código
+                                                uses: actions/checkout@v4
+
+                                                      - name: Preparar Python
+                                                              uses: actions/setup-python@v5
+                                                                      with:
+                                                                                python-version: '3.12'
+                                                                                          cache: pip
+
+                                                                                                - name: Instalar dependências
+                                                                                                        run: pip install -r requirements.txt
+                                                                                                        
+                                                                                                              - name: Processar fila de publicação
+                                                                                                                      env:
+                                                                                                                                GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+                                                                                                                                          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+                                                                                                                                                    GOOGLE_DRIVE_QUEUE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_QUEUE_FOLDER_ID }}
+                                                                                                                                                              GOOGLE_DRIVE_PROCESSING_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_PROCESSING_FOLDER_ID }}
+                                                                                                                                                                        GOOGLE_DRIVE_PUBLISHED_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_PUBLISHED_FOLDER_ID }}
+                                                                                                                                                                                  GOOGLE_DRIVE_FAILED_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FAILED_FOLDER_ID }}
+                                                                                                                                                                                            YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+                                                                                                                                                                                                    run: python process_queue.py
