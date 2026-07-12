@@ -10,6 +10,7 @@ from google.oauth2.credentials import Credentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaIoBaseDownload
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 SHEET_ID = os.environ.get("GOOGLE_SHEET_ID")
